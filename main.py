@@ -391,7 +391,7 @@ def pic_flags(c, x, y, w, h):
 # ---------------------------------------------------------------------------
 
 def draw_panel(canvas, x, y, w, h, kicker, kicker_color, title, caption,
-               pic_fn):
+               pic_fn, fact=""):
     canvas.fill_rect(x, y, w, h, PANEL)
     canvas.rect(x, y, w, h, EDGE, 2)
     canvas.fill_rect(x, y, w, 34, kicker_color)
@@ -407,6 +407,24 @@ def draw_panel(canvas, x, y, w, h, kicker, kicker_color, title, caption,
     for line in wrap_text(caption.upper(), w - 24, 2):
         draw_text(canvas, x + 12, ty, line, 2, (52, 52, 52))
         ty += 17
+    if fact:
+        lines = wrap_text(fact.upper(), w - 24, 2)
+        fy = y + h - 12 - 17 * len(lines)
+        canvas.fill_rect(x + 12, fy - 10, w - 24, 2, EDGE)
+        for line in lines:
+            draw_text(canvas, x + 12, fy, line, 2, RED)
+            fy += 17
+
+
+# One verified key fact per story, set in red at the foot of its panel.
+FACTS = [
+    "AT LEAST 8 KILLED IN KYIV",
+    "FIRST STATE GENOCIDE VERDICT",
+    "S&P 500 -3.7%, NASDAQ -5.3%",
+    "NEARLY 200 NATIONS AT THE TABLE",
+    "CENTRAL PERU, RESIDENTS RUSH OUT",
+    "THREE DEALS SIGNED IN BRUSSELS",
+]
 
 
 STORIES = [
@@ -460,7 +478,7 @@ def draw_page():
         col, row = i % 3, i // 3
         px = margin + col * (pw + gap)
         py = 176 + row * (ph + gap)
-        draw_panel(c, px, py, pw, ph, *story)
+        draw_panel(c, px, py, pw, ph, *story, fact=FACTS[i])
     # Footer
     foot = "SOURCES: AP, REUTERS, BBC, FRANCE 24 - 21 NOVEMBER 2026"
     fw = text_width(foot, 1)
